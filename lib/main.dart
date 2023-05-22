@@ -6,6 +6,6 @@ void main() {
     // theme: ThemeData.from(
     //   colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.green),
     // ),
-    home: ToDoEinkaufen(),
+    home: ShoppingToDo(),
   ));
 }

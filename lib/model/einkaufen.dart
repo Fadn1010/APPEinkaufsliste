@@ -1,11 +1,9 @@
 
 
-//Klasse kreiert
-class ArtikelListe {
-  // Eigenschaften
+class ShoppingItem {
   String name;
-  int menge;
-  bool checked;
+  int amount;
+  bool isChecked;
 
-  ArtikelListe(this.name, this.menge, this.checked); // mit Konstruktor
+  ShoppingItem(this.name, this.amount, this.isChecked);
 }
