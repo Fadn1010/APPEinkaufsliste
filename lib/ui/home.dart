@@ -34,11 +34,15 @@ class _ShoppingToDoState extends State<ShoppingToDo> {
         child: AppBar(
           centerTitle: true,
           title: const Text(
-            'Einkaufsliste',
-            style: TextStyle(color: Color(0xFF2f2d7d), fontSize: 30),
+            'Shopping List',
+            style: TextStyle(color: Color(0xFF2f2d7d), fontSize: 50, fontFamily:"Beauty Brand"),
           ),
           backgroundColor: Color(0xFFffcdb2),
           elevation: 0,
+          shape: ContinuousRectangleBorder(
+            borderRadius: BorderRadius.circular(50.0),
+          ),
+
         ),
       ),
       body: Padding(
