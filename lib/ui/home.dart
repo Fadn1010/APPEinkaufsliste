@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:testeins/model/einkaufen.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+//import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:testeins/ui/ui_shopping.dart';
 
 class ShoppingToDo extends StatefulWidget {
