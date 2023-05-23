@@ -45,18 +45,25 @@ class _ShoppingToDoState extends State<ShoppingToDo> {
         child: Column(
           children: [
             Expanded(
-              child: ListView.builder(
-                itemCount: liste.length,
-                itemBuilder: (BuildContext context, int index) {
-                  //Cette vérification est necessaire pour ajouter ch
-                  if (index >= nameControllers.length) {
-                    nameControllers.add(TextEditingController());
-                  }
-                  if (index >= amountControllers.length) {
-                    amountControllers.add(TextEditingController());
-                  }
-                  return Hinzufuegen(index);
-                },
+              child: Scrollbar(
+                trackVisibility: true,
+                thumbVisibility: true,
+                thickness: 10,
+                radius: Radius.circular(5),
+                interactive: true,
+                child: ListView.builder(
+                  itemCount: liste.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    //Cette vérification est necessaire pour ajouter ch
+                    if (index >= nameControllers.length) {
+                      nameControllers.add(TextEditingController());
+                    }
+                    if (index >= amountControllers.length) {
+                      amountControllers.add(TextEditingController());
+                    }
+                    return Hinzufuegen(index);
+                  },
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -109,21 +116,20 @@ class _ShoppingToDoState extends State<ShoppingToDo> {
             child: Container(
               height: 70,
               decoration: BoxDecoration(
-              //  borderRadius: BorderRadius.circular(10),
+                //  borderRadius: BorderRadius.circular(10),
                 color: Colors.grey.shade200,
               ),
               child: ListTile(
-                minLeadingWidth:30,
+                minLeadingWidth: 30,
                 title: TextField(
                   decoration: InputDecoration(
-                  hintText: 'Item',
-                ),
+                    hintText: 'Item',
+                  ),
                   style: TextStyle(
                     decoration: liste[index].isChecked
                         ? TextDecoration.lineThrough
                         : TextDecoration.none,
                   ),
-
                   controller: nameControllers[index],
                   onChanged: (value) {
                     if (value.trim().isEmpty) {
@@ -139,11 +145,14 @@ class _ShoppingToDoState extends State<ShoppingToDo> {
                       nameControllers[index].clear();
                     }
                   },
-
                 ),
                 leading: Container(
                   width: 50,
                   child: TextField(
+                    decoration: InputDecoration(
+                      // labelStyle: TextStyle(fontSize: 15),
+                      hintText: 'Amount',
+                    ),
                     controller: amountControllers[index],
                     style: TextStyle(fontSize: 20),
                     textAlign: TextAlign.center,
@@ -157,10 +166,6 @@ class _ShoppingToDoState extends State<ShoppingToDo> {
                         amountControllers[index].clear();
                       }
                     },
-                    decoration: InputDecoration(
-                      labelStyle: TextStyle(fontSize: 15),
-                      hintText: 'Amount',
-                    ),
                   ),
                 ),
                 trailing: Container(
@@ -168,7 +173,8 @@ class _ShoppingToDoState extends State<ShoppingToDo> {
                   child: Checkbox(
                     value: liste[index].isChecked,
                     onChanged: (value) {
-                      if (liste[index].name.isNotEmpty && liste[index].amount > 0) {
+                      if (liste[index].name.isNotEmpty &&
+                          liste[index].amount > 0) {
                         setState(() {
                           liste[index].isChecked = value!;
                         });
@@ -181,18 +187,19 @@ class _ShoppingToDoState extends State<ShoppingToDo> {
               ),
             ),
           ),
-          Container( // delete Part
+          Container(
+            // delete Part
             width: 50,
             height: 70,
             decoration: BoxDecoration(
-               // borderRadius: BorderRadius.circular(10),
+                // borderRadius: BorderRadius.circular(10),
                 color: Colors.grey.shade200),
             child: ElevatedButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all( Colors.grey),
+                backgroundColor: MaterialStateProperty.all(Colors.grey),
               ),
-              child: Icon(Icons.delete, color: Color(0xFF2f2d7d), size:25.0),
-              onPressed: (){
+              child: Icon(Icons.delete, color: Color(0xFF2f2d7d), size: 25.0),
+              onPressed: () {
                 setState(() {
                   liste.removeAt(index);
                   nameControllers.removeAt(index);
