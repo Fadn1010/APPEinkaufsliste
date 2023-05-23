@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:testeins/model/einkaufen.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:testeins/ui/ui_shopping.dart';
 
 class ShoppingToDo extends StatefulWidget {
   const ShoppingToDo({Key? key}) : super(key: key);
@@ -75,7 +76,7 @@ class _ShoppingToDoState extends State<ShoppingToDo> {
                   alignment: Alignment.center,
                   shape: MaterialStateProperty.all(const CircleBorder()),
                   backgroundColor:
-                      MaterialStateProperty.all(const Color(0xFFffcdb2)),
+                  MaterialStateProperty.all(const Color(0xFFffcdb2)),
                 ),
                 child: Icon(Icons.add),
                 onPressed: () {
@@ -121,9 +122,41 @@ class _ShoppingToDoState extends State<ShoppingToDo> {
               ),
               child: ListTile(
                 minLeadingWidth: 30,
-                title: TextField(
+
+                leading: Container(// Anfang
+                width: 50,
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Amount',
+                    hintStyle: TextStyle(fontSize: 12),
+                  ),
+                  controller: amountControllers[index],
+
+                  textAlign: TextAlign.center,
+                  onChanged: (value) {
+                    if (value
+                        .trim()
+                        .isEmpty) {
+                      setState(() {
+                        liste[index].amount = 0;
+                      });
+                    }
+                    else if (RegExp (r'^\d{1,2}$')
+                        .hasMatch(value.toString())) {
+                      setState(() {
+                        liste[index].amount = int.parse(value);
+                      });
+                    } else {
+                      PopupMenge();
+                      amountControllers[index].clear();
+                    }
+                  },
+                ),
+                ),
+                title: TextField( //Mitte
                   decoration: InputDecoration(
                     hintText: 'Item',
+                    hintStyle: TextStyle(fontSize: 12),
                   ),
                   style: TextStyle(
                     decoration: liste[index].isChecked
@@ -132,7 +165,9 @@ class _ShoppingToDoState extends State<ShoppingToDo> {
                   ),
                   controller: nameControllers[index],
                   onChanged: (value) {
-                    if (value.trim().isEmpty) {
+                    if (value
+                        .trim()
+                        .isEmpty) {
                       setState(() {
                         liste[index].name = '';
                       });
@@ -146,29 +181,8 @@ class _ShoppingToDoState extends State<ShoppingToDo> {
                     }
                   },
                 ),
-                leading: Container(
-                  width: 50,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      // labelStyle: TextStyle(fontSize: 15),
-                      hintText: 'Amount',
-                    ),
-                    controller: amountControllers[index],
-                    style: TextStyle(fontSize: 20),
-                    textAlign: TextAlign.center,
-                    onChanged: (value) {
-                      if (RegExp(r'^\d{1,2}$').hasMatch(value.toString())) {
-                        setState(() {
-                          liste[index].amount = int.parse(value);
-                        });
-                      } else {
-                        PopupMenge();
-                        amountControllers[index].clear();
-                      }
-                    },
-                  ),
-                ),
-                trailing: Container(
+
+                trailing: Container( //Ende
                   width: 20,
                   child: Checkbox(
                     value: liste[index].isChecked,
@@ -192,7 +206,7 @@ class _ShoppingToDoState extends State<ShoppingToDo> {
             width: 50,
             height: 70,
             decoration: BoxDecoration(
-                // borderRadius: BorderRadius.circular(10),
+              // borderRadius: BorderRadius.circular(10),
                 color: Colors.grey.shade200),
             child: ElevatedButton(
               style: ButtonStyle(
@@ -216,53 +230,44 @@ class _ShoppingToDoState extends State<ShoppingToDo> {
   void PopupMenge() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Der eingegebene Wert ist keine Zahl. Bitte korrigieren."),
-        actions: [
-          ElevatedButton(
-            child: Text("close"),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+      builder: (context) =>
+          AlertDialog(
+            title: Text(
+                "The entered value is not a number. Please correct it."),
+            actions: [
+              createCloseButton(context),
+            ],
           ),
-        ],
-      ),
     );
   }
 
   void PopupName() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-            "Bitte einen Namen des Einkaufsartikels ein. Bitte korrigieren."),
-        actions: [
-          ElevatedButton(
-            child: Text("close"),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+      builder: (context) =>
+          AlertDialog(
+            title: Text(
+                "Please enter a correct name for the shopping item."),
+            actions: [
+              createCloseButton(context),
+            ],
           ),
-        ],
-      ),
     );
   }
 
   void PopupCheckbox() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-            "Bitte gib eine Menge und den Namen des Einkaufsartikels ein."),
-        actions: [
-          ElevatedButton(
-            child: Text("close"),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+      builder: (context) =>
+          AlertDialog(
+            title: Text(
+                "Please enter an amount and the name of the shopping item."),
+            actions: [
+              createCloseButton(context),
+            ],
           ),
-        ],
-      ),
     );
   }
+
+
 }
