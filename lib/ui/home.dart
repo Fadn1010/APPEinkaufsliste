@@ -31,7 +31,7 @@ class _ShoppingToDoState extends State<ShoppingToDo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: designApp(),
+      appBar: AppDesign(),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
@@ -50,8 +50,8 @@ class _ShoppingToDoState extends State<ShoppingToDo> {
       decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Color(0x00f5f5f5), Color(0xfff5f5f5)],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter)),
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter)),
       width: double.infinity,
       height: 50,
       child: ElevatedButton(
