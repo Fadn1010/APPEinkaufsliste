@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:testeins/model/einkaufen.dart';
-//import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:testeins/ui/ui_shopping.dart';
+
+
+//import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ShoppingToDo extends StatefulWidget {
   const ShoppingToDo({Key? key}) : super(key: key);
@@ -29,90 +31,71 @@ class _ShoppingToDoState extends State<ShoppingToDo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size(double.infinity, 80),
-        child: AppBar(
-          centerTitle: true,
-          title: const Text(
-            'Shopping List',
-            style: TextStyle(color: Color(0xFF2f2d7d), fontSize: 50, fontFamily:"Beauty Brand"),
-          ),
-          backgroundColor: Color(0xFFffcdb2),
-          elevation: 0,
-          shape: ContinuousRectangleBorder(
-            borderRadius: BorderRadius.circular(50.0),
-          ),
-
-        ),
-      ),
+      appBar: designApp(),
       body: Padding(
-        padding: EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
-            Expanded(
-              child: Scrollbar(
-                trackVisibility: true,
-                thumbVisibility: true,
-                thickness: 10,
-                radius: Radius.circular(5),
-                interactive: true,
-                child: ListView.builder(
-                  itemCount: liste.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    //Cette vérification est necessaire pour ajouter ch
-                    if (index >= nameControllers.length) {
-                      nameControllers.add(TextEditingController());
-                    }
-                    if (index >= amountControllers.length) {
-                      amountControllers.add(TextEditingController());
-                    }
-                    return Hinzufuegen(index);
-                  },
-                ),
-              ),
-            ),
+            buildListView(),
             const SizedBox(height: 20),
-            Container(
-              width: 50,
-              height: 50,
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  alignment: Alignment.center,
-                  shape: MaterialStateProperty.all(const CircleBorder()),
-                  backgroundColor:
-                  MaterialStateProperty.all(const Color(0xFFffcdb2)),
-                ),
-                child: Icon(Icons.add),
-                onPressed: () {
-                  setState(() {
-                    liste.add(ShoppingItem("", 0, false));
-                  });
-                },
-              ),
-            ),
+            buildPlusButton(),
           ],
         ),
       ),
     );
   }
 
-  Padding Hinzufuegen(int index) {
-    // return Slidable(
-    //   actionPane: SlidableDrawerActionPane(),
-    //   secondaryActions: [
-    //     IconSlideAction(
-    //       caption: 'Löschen',
-    //       color: Colors.red,
-    //       icon: Icons.delete,
-    //       onTap: () {
-    //         setState(() {
-    //           liste.removeAt(index);
-    //           nameControllers.removeAt(index);
-    //           amountControllers.removeAt(index);
-    //         });
-    //       },
-    //     ),
-    //   ],
+  Widget buildPlusButton() {
+    return Container(
+      decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0x00f5f5f5), Color(0xfff5f5f5)],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter)),
+      width: double.infinity,
+      height: 50,
+      child: ElevatedButton(
+        style: ButtonStyle(
+          alignment: Alignment.center,
+          shape: MaterialStateProperty.all(const CircleBorder()),
+          backgroundColor: MaterialStateProperty.all(const Color(0xFFffcdb2)),
+        ),
+        child: const Icon(Icons.add),
+        onPressed: () {
+          setState(() {
+            liste.add(ShoppingItem("", 0, false));
+          });
+        },
+      ),
+    );
+  }
+
+  Widget buildListView (){
+    return Expanded(
+      child: Scrollbar(
+        trackVisibility: true,
+        thumbVisibility: true,
+        thickness: 10,
+        radius: const Radius.circular(5),
+        interactive: true,
+        child: ListView.builder(
+          itemCount: liste.length,
+          itemBuilder: (BuildContext context, int index) {
+            //Cette vérification est necessaire pour ajouter ch
+            if (index >= nameControllers.length) {
+              nameControllers.add(TextEditingController());
+            }
+            if (index >= amountControllers.length) {
+              amountControllers.add(TextEditingController());
+            }
+            return buildListItem(index);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget  buildListItem(int index) {
     return Padding(
       padding: const EdgeInsets.all(2.0),
       child: Row(
@@ -126,39 +109,36 @@ class _ShoppingToDoState extends State<ShoppingToDo> {
               ),
               child: ListTile(
                 minLeadingWidth: 30,
-
-                leading: Container(// Anfang
-                width: 50,
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Amount',
-                    hintStyle: TextStyle(fontSize: 12),
+                leading: Container(
+                  // Anfang
+                  width: 50,
+                  child: TextField(
+                    decoration: const InputDecoration(
+                      hintText: 'Amount',
+                      hintStyle: TextStyle(fontSize: 12),
+                    ),
+                    controller: amountControllers[index],
+                    textAlign: TextAlign.center,
+                    onChanged: (value) {
+                      if (value.trim().isEmpty) {
+                        setState(() {
+                          liste[index].amount = 0;
+                        });
+                      } else if (RegExp(r'^\d{1,2}$')
+                          .hasMatch(value.toString())) {
+                        setState(() {
+                          liste[index].amount = int.parse(value);
+                        });
+                      } else {
+                        showAmountPopup();
+                        amountControllers[index].clear();
+                      }
+                    },
                   ),
-                  controller: amountControllers[index],
-
-                  textAlign: TextAlign.center,
-                  onChanged: (value) {
-                    if (value
-                        .trim()
-                        .isEmpty) {
-                      setState(() {
-                        liste[index].amount = 0;
-                      });
-                    }
-                    else if (RegExp (r'^\d{1,2}$')
-                        .hasMatch(value.toString())) {
-                      setState(() {
-                        liste[index].amount = int.parse(value);
-                      });
-                    } else {
-                      PopupMenge();
-                      amountControllers[index].clear();
-                    }
-                  },
                 ),
-                ),
-                title: TextField( //Mitte
-                  decoration: InputDecoration(
+                title: TextField(
+                  //Mitte
+                  decoration: const InputDecoration(
                     hintText: 'Item',
                     hintStyle: TextStyle(fontSize: 12),
                   ),
@@ -169,9 +149,7 @@ class _ShoppingToDoState extends State<ShoppingToDo> {
                   ),
                   controller: nameControllers[index],
                   onChanged: (value) {
-                    if (value
-                        .trim()
-                        .isEmpty) {
+                    if (value.trim().isEmpty) {
                       setState(() {
                         liste[index].name = '';
                       });
@@ -180,13 +158,13 @@ class _ShoppingToDoState extends State<ShoppingToDo> {
                         liste[index].name = value;
                       });
                     } else {
-                      PopupName();
+                      showNamePopup();
                       nameControllers[index].clear();
                     }
                   },
                 ),
-
-                trailing: Container( //Ende
+                trailing: Container(
+                  //Ende
                   width: 20,
                   child: Checkbox(
                     value: liste[index].isChecked,
@@ -197,7 +175,7 @@ class _ShoppingToDoState extends State<ShoppingToDo> {
                           liste[index].isChecked = value!;
                         });
                       } else {
-                        PopupCheckbox();
+                        showCheckboxPopup();
                       }
                     },
                   ),
@@ -210,13 +188,13 @@ class _ShoppingToDoState extends State<ShoppingToDo> {
             width: 50,
             height: 70,
             decoration: BoxDecoration(
-              // borderRadius: BorderRadius.circular(10),
+                // borderRadius: BorderRadius.circular(10),
                 color: Colors.grey.shade200),
             child: ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.grey),
               ),
-              child: Icon(Icons.delete, color: Color(0xFF2f2d7d), size: 25.0),
+              child: const Icon(Icons.delete, color: Color(0xFF2f2d7d), size: 25.0),
               onPressed: () {
                 setState(() {
                   liste.removeAt(index);
@@ -231,47 +209,40 @@ class _ShoppingToDoState extends State<ShoppingToDo> {
     );
   }
 
-  void PopupMenge() {
+  void showAmountPopup() {
     showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: Text(
-                "The entered value is not a number. Please correct it."),
-            actions: [
-              createCloseButton(context),
-            ],
-          ),
+      builder: (context) => AlertDialog(
+        title: const Text("The entered value is not a number. Please correct it."),
+        actions: [
+          createCloseButton(context),
+        ],
+      ),
     );
   }
 
-  void PopupName() {
+  void showNamePopup() {
     showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: Text(
-                "Please enter a correct name for the shopping item."),
-            actions: [
-              createCloseButton(context),
-            ],
-          ),
+      builder: (context) => AlertDialog(
+        title: const Text("Please enter a correct name for the shopping item."),
+        actions: [
+          createCloseButton(context),
+        ],
+      ),
     );
   }
 
-  void PopupCheckbox() {
+  void showCheckboxPopup() {
     showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: Text(
-                "Please enter an amount and the name of the shopping item."),
-            actions: [
-              createCloseButton(context),
-            ],
-          ),
+      builder: (context) => AlertDialog(
+        title:
+            const Text("Please enter an amount and the name of the shopping item."),
+        actions: [
+          createCloseButton(context),
+        ],
+      ),
     );
   }
-
-
 }
